@@ -190,31 +190,56 @@ static int adjust(Sys *s, int pi, int rj, int dk){
 }
 
 static void enter_claim_graph(Sys *s){
-	free(s->R); free(s->Avail);
+	free(s->R); 
+	free(s->Avail);
     free_matrix(s->Max, s->n);
     free_matrix(s->Alloc, s->n);
-    s->R=s->Avail=NULL; s->Max=s->Alloc=NULL; s->n=s->m=0;
+    s->R=s->Avail=NULL; 
+    s->Max=s->Alloc=NULL; 
+    s->n=s->m=0;
 
-    printf("Enter number of resources: "); scanf("%d",&s->m);
+    printf("Enter number of resources: "); 
+    scanf("%d",&s->m);
     s->R=(int*)calloc(s->m,sizeof(int));
     s->Avail=(int*)calloc(s->m,sizeof(int));
 
     printf("Enter number of units for resources (r0 to r%d): ", s->m-1);
-    for(int j=0;j<s->m;j++) scanf("%d",&s->R[j]);
+    for (int j = 0;j < s->m;j++) 
+    	scanf("%d",&s->R[j]);
 
-    printf("Enter number of processes: "); scanf("%d",&s->n);
-    s->Max=new_matrix(s->n,s->m);
-    s->Alloc=new_matrix(s->n,s->m);
+    printf("Enter number of processes: "); 
+    scanf("%d",&s->n);
+    s->Max = new_matrix(s->n,s->m);
+    s->Alloc = new_matrix(s->n,s->m);
 
-    for(int i=0;i<s->n;i++){
+    for (int i = 0;i < s->n;i++){
         printf("Enter maximum units p%d will claim (r0..r%d): ", i, s->m-1);
-        for(int j=0;j<s->m;j++) scanf("%d",&s->Max[i][j]);
+        for (int j = 0;j < s->m;j++) 
+        	scanf("%d",&s->Max[i][j]);
     }
-    for(int i=0;i<s->n;i++){
+    for (int i = 0;i<s->n;i++){
         printf("Enter currently allocated to p%d (r0..r%d): ", i, s->m-1);
-        for(int j=0;j<s->m;j++) scanf("%d",&s->Alloc[i][j]);
+        for (int j=0;j<s->m;j++) scanf("%d",&s->Alloc[i][j]);
     }
     recompute_available(s);
     print_all(s);
+}
+
+static void request_flow(Sys *s){
+    if(!s->R){ 
+    	printf("Please enter a claim graph first.\n"); 
+    	return; 
+    }
+    char pbuf[16], rbuf[16]; 
+    int pi = -1,rj = -1, k = 0;
+    printf("Enter requesting process: "); 
+    scanf("%15s",pbuf);
+    if (pbuf[0]=='p'||pbuf[0]=='P') pi=atoi(pbuf+1);
+    printf("Enter requested resource: "); 
+    scanf("%15s",rbuf);
+    if(rbuf[0]=='r'||rbuf[0]=='R') rj=atoi(rbuf+1);
+    printf("Enter number of units process p%d is requesting from resource r%d: ", pi, rj);
+    scanf("%d",&k);
+    adjust(s, pi, rj, +k);
 }
 
