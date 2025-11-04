@@ -34,7 +34,7 @@ static int** new_matrix(int r, int c){
 		a[i] = (int*)calloc(c,sizeof(**a));
 	return a;
 }
-static void free_matrix(int **a,, int r){
+static void free_matrix(int **a, int r){
 	if (!a)
 		return;
 	for (int i = 0; i < r; i++)
@@ -72,8 +72,8 @@ static void print_matrix_named(const char *name, Sys *s, int type){
 	for (int i = 0; i < s->n; i++){
 		printf("p%d\t", i);
 		for (int j = 0; j < s->m; j++){
-			int val = (kind==0)? s->Max[i][j] : (kind==1)? s->Alloc[i][j] : NEED(s, i, j);
-			printf("%d\t", val)''
+			int val = (type==0)? s->Max[i][j] : (type==1)? s->Alloc[i][j] : NEED(s, i, j);
+			printf("%d\t", val);
 		}
 		printf("\n");
 	}
