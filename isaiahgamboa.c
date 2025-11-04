@@ -55,8 +55,18 @@ static inline int NEED(Sys *s, int i, int j) {
 	return s->Max[i][j] - s->Alloc[i][j];
 }
 
-
-
+static void print_vector(const char *title, int *v, int m){
+	printf("\n%s\n\t", title);
+	for (int j = 0; j < m ; j++)
+		printf("r%d\t", j);
+	printf("\n\t");
+	for (int j = 0; j < m; j++)
+		printf("%d\t", v[j]);
+	printf("\n");
+}
+static void print_matrix_named(const char *name, Sys *s, int type){
+	
+}
 
 
 
