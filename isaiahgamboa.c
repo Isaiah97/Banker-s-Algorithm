@@ -145,51 +145,44 @@ static int safety_check(Sys *s, int print_steps){
 }
 
 static int adjust(Sys *s, int pi, int rj, int dk){
-	if (pi < 0 || pi >= s->n || rj < 0 || rj >= s->m) {
-		printf("Invalid process/resource. \n");
-		return 0;
-	}
-	if (dk == 0){
-		printf("No change. \n");
-		return 1;
-	}
+    if(pi<0||pi>=s->n||rj<0||rj>=s->m) { 
+        printf("Invalid process/resource.\n"); 
+        return 0; 
+    }
+    if(dk==0){ 
+        printf("No change.\n"); 
+        return 1; 
+    }
 
-	if (dk > 0){
-		if (dk > NEED(s, pi, rj)){
-			printf("Error: reuest exceeds needs. \n");
-			return 0;
-		}
-		if(dk > s->Avail[rj]){
-			printf("Error: request exceeds available units. \n");
-			return 0;
-		}
+    if(dk>0){
+        if(dk > NEED(s,pi,rj)){ printf("Error: request exceeds need.\n"); return 0; }
+        if(dk > s->Avail[rj]){ printf("Error: request exceeds available units.\n"); return 0; }
 
-		s->Avail[rj] -= dk;
-		s->Alloc[pi][rj] += dk;
+        s->Avail[rj]-=dk; 
+        s->Alloc[pi][rj]+=dk;
 
-		if(!safety_check(s,0)){
-			s->Avail[rj] += dk;
-			s->Alloc[pi][rj] -= dk;
-			printf("\nRequest would lead to UNSAFE state. Request denied. \n");
-			return 0;
-		}
-		else{
-			int k = -dk;
-			if (k > s->Alloc[pi][rj]){
-				printf("Error: cannot release more than allocated. \n");
-				return 0;
-				s->Alloc[pi][rj] -= k;
-				s->Avail[rj] += k;
-			}
-			print_vector("Available:", s->Avail, s->m);
-			print_matrix_named("Allocated:", s, 1);
-			print_matrix_named("Need", s, 2);
-			return 1;
-		}
-	}
+        if(!safety_check(s,0)){ 
+            
+            s->Avail[rj]+=dk; 
+            s->Alloc[pi][rj]-=dk;
+            printf("\nRequest would lead to UNSAFE state. Request denied.\n");
+            return 0;
+        }
 
+    } else { 
+        int k = -dk;
+        if(k > s->Alloc[pi][rj]){ printf("Error: cannot release more than allocated.\n"); return 0; }
+
+        s->Alloc[pi][rj]-=k; 
+        s->Avail[rj]+=k;
+    }
+
+    print_vector("Available:", s->Avail, s->m);
+    print_matrix_named("Allocated:", s, 1);
+    print_matrix_named("Need:", s, 2);
+
+    return 1;   
 }
-
 static void enter_claim_graph(Sys *s){
 	free(s->R); 
 	free(s->Avail);
