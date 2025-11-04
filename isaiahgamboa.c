@@ -87,6 +87,62 @@ static void print_all(Sys *s){
 	print_matrix_named("Need:", s, 2);
 }
 
+static int safety_check(Sys *s, int print_steps){
+	int *Work = (int*)malloc(s->m*sizeof(int));
+	int *Finish = (int*)calloc(s->n, sizeof(int));
+	int *seq = (int*)malloc(s->n*sizeof(int));
+	int seq_len = 0;
+
+	for (int j = 0; j < s->m; j++)
+		Work[j] = s->Avail[j];
+
+	for (int pass = 0; pass < s->n; pass++){
+		int progressed = 0;
+		for (int i = 0; i < s->n; pass++){
+			if(Finish[i])
+				continue;
+			int can = 1;
+			for (int j = 0; j < s->m; j++)
+				if (NEED(s, i, j) > Work[j]){
+					can = 0;
+					break;
+				}
+			if(print_steps){
+				printf("Comparing: < ");
+				for (int j = 0; j < s->m; j++)
+					printf("%d ", NEED(s, i, j));
+				printf("> <= < ");
+				for (int j = 0; j < s->m; j++)
+					printf("%d ", Work[j]);
+				printf("> : Process p%d %s be sequenced \n", i, can?"can":"cannot");
+			}
+			if (can){
+				for( int j = 0; j < s->m; j++)
+					Work[j] += s->Alloc[i][j];
+				Finish[i] = 1;
+				seq[seq_len++] = i;
+				progressed = 1;
+			}
+		}
+		if (!progressed)
+			break;
+	}
+	int safe = 1;
+	for (int i = 0; i < s->n; i++)
+		if(!Finish[i]){
+			safe = 0;
+			break;
+		}
+		if (print_steps && safe){
+			printf("Safe sequence of processes: ");
+			for (int k = 0; k < seq_len; k++)
+				printf("p%d%s", seq[k], (k + 1 == seq_len)? "\n": " ");
+		}
+		free(Work);
+		free(Finish);
+		free(seq);
+		return safe;
+}
 
 
 
