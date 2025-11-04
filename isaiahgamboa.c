@@ -243,3 +243,30 @@ static void request_flow(Sys *s){
     adjust(s, pi, rj, +k);
 }
 
+static void release_flow(Sys *s){
+	if (!s->R){
+		printf("Please enter a claim fraph first. \n");
+		return;
+	}
+	char pbuf[16], rbuf[16];
+	int pi = -1, rj = -1, k = 0;
+	printf("enter releasing processor: ");
+	scanf("%15s", pbuf);
+	if(pbuf[0] == 'p' || pbuf[0] == 'P')
+		pi = atoi(pbuf + 1);
+	printf("Enter released resource: ");
+	scanf("%15s", rbuf);
+	if(rbuf[0] == 'r' || rbuf[0] == 'R')
+		rj = atoi(rbuf + 1);
+	printf("Enter number of units process p%d is releasing from resource r%d: ", pi, rj);
+	scanf("%d", &k);
+	adjust(s, pi, rj, -k);
+}
+
+static void safe_sequence(Sys *s){
+	
+}
+
+
+
+
