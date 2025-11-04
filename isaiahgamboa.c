@@ -219,7 +219,7 @@ static void enter_claim_graph(Sys *s){
         for (int j = 0; j < s->m; j++) scanf("%d", &s->Max[IDX(s,i,j)]);
     }
     for (int i = 0; i < s->n; i++){
-        printf("Enter currently allocated to p%d (r0..r%d): ", i, s->m - 1);
+        printf("Enter number of units of each resource (r0 to r%d) currently allocated to process p%d: ", i, s->m - 1);
         for (int j = 0; j < s->m; j++) scanf("%d", &s->Alloc[IDX(s,i,j)]);
     }
     recompute_available(s);
