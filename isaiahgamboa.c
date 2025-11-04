@@ -185,7 +185,6 @@ static int adjust(Sys *s, int pi, int rj, int dk){
 			print_matrix_named("Allocated:", s, 1);
 			print_matrix_named("Need", s, 2);
 			return 1;
-		}
 	}
 }
 
