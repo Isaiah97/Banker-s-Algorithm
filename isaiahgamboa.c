@@ -98,9 +98,11 @@ static int safety_check(Sys *s, int print_steps){
 
 	for (int pass = 0; pass < s->n; pass++){
 		int progressed = 0;
-		for (int i = 0; i < s->n; pass++){
+		
+		for (int i = 0; i < s->n; i++){
 			if(Finish[i])
 				continue;
+			
 			int can = 1;
 			for (int j = 0; j < s->m; j++)
 				if (NEED(s, i, j) > Work[j]){
@@ -114,7 +116,7 @@ static int safety_check(Sys *s, int print_steps){
 				printf("> <= < ");
 				for (int j = 0; j < s->m; j++)
 					printf("%d ", Work[j]);
-				printf("> : Process p%d %s be sequenced \n", i, can?"can":"cannot");
+				printf("> : Process p%d %s be sequenced \n", i, can? "can":"cannot");
 			}
 			if (can){
 				for( int j = 0; j < s->m; j++)
@@ -145,33 +147,42 @@ static int safety_check(Sys *s, int print_steps){
 }
 
 static int adjust(Sys *s, int pi, int rj, int dk){
-    if(pi<0||pi>=s->n||rj<0||rj>=s->m) { 
+    if(pi < 0 || pi >= s->n || rj < 0 || rj >= s->m) { 
         printf("Invalid process/resource.\n"); 
         return 0; 
     }
-    if(dk==0){ 
+    if(dk == 0){ 
         printf("No change.\n"); 
         return 1; 
     }
 
     if(dk>0){
-        if(dk > NEED(s,pi,rj)){ printf("Error: request exceeds need.\n"); return 0; }
-        if(dk > s->Avail[rj]){ printf("Error: request exceeds available units.\n"); return 0; }
+        if(dk > NEED(s, pi, rj)){ 
+        	printf("Error: request exceeds need.\n"); 
+        	return 0; 
+        }
+        if(dk > s->Avail[rj]){ 
+        	printf("Error: request exceeds available units.\n"); 
+        	return 0; 
+        }
 
-        s->Avail[rj]-=dk; 
-        s->Alloc[pi][rj]+=dk;
+        s->Avail[rj] -= dk; 
+        s->Alloc[pi][rj] += dk;
 
-        if(!safety_check(s,0)){ 
+        if(!safety_check(s, 0)){ 
             
-            s->Avail[rj]+=dk; 
-            s->Alloc[pi][rj]-=dk;
+            s->Avail[rj] += dk; 
+            s->Alloc[pi][rj] -= dk;
             printf("\nRequest would lead to UNSAFE state. Request denied.\n");
             return 0;
         }
 
     } else { 
         int k = -dk;
-        if(k > s->Alloc[pi][rj]){ printf("Error: cannot release more than allocated.\n"); return 0; }
+        if(k > s->Alloc[pi][rj]){ 
+        	printf("Error: cannot release more than allocated.\n"); 
+        	return 0; 
+        }
 
         s->Alloc[pi][rj]-=k; 
         s->Avail[rj]+=k;
@@ -188,25 +199,25 @@ static void enter_claim_graph(Sys *s){
 	free(s->Avail);
     free_matrix(s->Max, s->n);
     free_matrix(s->Alloc, s->n);
-    s->R=s->Avail=NULL; 
-    s->Max=s->Alloc=NULL; 
-    s->n=s->m=0;
+    s->R=s->Avail = NULL; 
+    s->Max=s->Alloc = NULL; 
+    s->n = s->m = 0;
 
     printf("Enter number of resources: "); 
-    scanf("%d",&s->m);
-    s->R=(int*)calloc(s->m,sizeof(int));
-    s->Avail=(int*)calloc(s->m,sizeof(int));
+    scanf("%d", &s->m);
+    s->R = (int*)calloc(s->m, sizeof(int));
+    s->Avail = (int*)calloc(s->m, sizeof(int));
 
-    printf("Enter number of units for resources (r0 to r%d): ", s->m-1);
-    for (int j = 0;j < s->m;j++) 
-    	scanf("%d",&s->R[j]);
+    printf("Enter number of units for resources (r0 to r%d): ", s->m - 1);
+    for (int j = 0;j < s->m; j++) 
+    	scanf("%d", &s->R[j]);
 
     printf("Enter number of processes: "); 
-    scanf("%d",&s->n);
-    s->Max = new_matrix(s->n,s->m);
-    s->Alloc = new_matrix(s->n,s->m);
+    scanf("%d", &s->n);
+    s->Max = new_matrix(s->n, s->m);
+    s->Alloc = new_matrix(s->n, s->m);
 
-    for (int i = 0;i < s->n;i++){
+    for (int i = 0;i < s->n; i++){
         printf("Enter maximum units p%d will claim (r0..r%d): ", i, s->m-1);
         for (int j = 0;j < s->m;j++) 
         	scanf("%d",&s->Max[i][j]);
@@ -279,12 +290,14 @@ static void menu(void){
 int main(void){
 	Sys s = {0};
 	int choice;
+
 	for(;;){
 		menu();
 		if(scanf("%d", &choice) != 1){
 			int c;
-			while((c = getchar()) != '\n' && c != EOF)
+			while((c = getchar()) != '\n' && c != EOF) {}
 				continue;
+			}
 			switch(choice){
 			case 1: enter_claim_graph(&s);
 				break;
@@ -304,7 +317,6 @@ int main(void){
 			}
 		}
 	}
-}
 
 
 
