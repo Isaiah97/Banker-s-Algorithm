@@ -53,7 +53,6 @@ static inline int NEED(const Sys *s, int i, int j){
     return s->Max[IDX(s,i,j)] - s->Alloc[IDX(s,i,j)];
 }
 
-/* --- Printing --- */
 static void print_vector(const char *title, const int *v, int m){
     printf("\n%s\n\t", title);
     for (int j = 0; j < m; j++) 
@@ -63,7 +62,7 @@ static void print_vector(const char *title, const int *v, int m){
     	printf("%d\t", v[j]);
     printf("\n");
 }
-static void print_matrix_named(const char *name, const Sys *s, int type /*0=Max,1=Alloc,2=Need*/){
+static void print_matrix_named(const char *name, const Sys *s, int type ){
     printf("\n%s\n\t", name);
     for (int j = 0; j < s->m; j++) 
     	printf("r%d\t", j);
@@ -87,7 +86,6 @@ static void print_all(const Sys *s){
     print_matrix_named("Need:", s, 2);
 }
 
-/* --- Banker's safety (no heap allocs) --- */
 static int safety_check(const Sys *s, int print_steps){
     int Work[s->m];
     int Finish[s->n];
@@ -148,7 +146,6 @@ static int safety_check(const Sys *s, int print_steps){
     return safe;
 }
 
-/* --- Request/Release --- */
 static int adjust(Sys *s, int pi, int rj, int dk){
     if (pi < 0 || pi >= s->n || rj < 0 || rj >= s->m) {
         printf("Invalid process/resource.\n");
@@ -159,7 +156,7 @@ static int adjust(Sys *s, int pi, int rj, int dk){
     	return 1; 
     }
 
-    if (dk > 0){ /* request */
+    if (dk > 0){ 
         if (dk > NEED(s,pi,rj)){ 
         	printf("Error: request exceeds need.\n"); 
         	return 0; 
@@ -168,18 +165,17 @@ static int adjust(Sys *s, int pi, int rj, int dk){
         	printf("Error: request exceeds available units.\n"); 
         	return 0; 
         }
-        /* tentative grant */
+
         s->Avail[rj] -= dk;
         s->Alloc[IDX(s,pi,rj)] += dk;
 
         if (!safety_check(s, 0)){
-            /* rollback */
             s->Avail[rj] += dk;
             s->Alloc[IDX(s,pi,rj)] -= dk;
             printf("\nRequest would lead to UNSAFE state. Request denied.\n");
             return 0;
         }
-    } else {     /* release */
+    } else {     
         int k = -dk;
         int *cell = &s->Alloc[IDX(s,pi,rj)];
         if (k > *cell){ printf("Error: cannot release more than allocated.\n"); 
@@ -195,7 +191,6 @@ static int adjust(Sys *s, int pi, int rj, int dk){
     return 1;
 }
 
-/* --- UI flows --- */
 static void enter_claim_graph(Sys *s){
     free_sys(s);
 
