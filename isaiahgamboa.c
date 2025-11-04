@@ -65,7 +65,18 @@ static void print_vector(const char *title, int *v, int m){
 	printf("\n");
 }
 static void print_matrix_named(const char *name, Sys *s, int type){
-	
+	printf("\n%s\n\t", name);
+	for (int j = 0; j < s->m; j++)
+		printf("r%d\t", j);
+	printf("\n");
+	for (int i = 0; i < s->n; i++){
+		printf("p%d\t", i);
+		for (int j = 0; j < s->m; j++){
+			int val = (kind==0)? s->Max[i][j] : (kind==1)? s->Alloc[i][j] : NEED(s, i, j);
+			printf("%d\t", val)''
+		}
+		printf("\n");
+	}
 }
 
 
