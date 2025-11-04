@@ -34,3 +34,29 @@ static int** new_matrix(int r, int c){
 		a[i] = (int*)calloc(c,sizeof(**a));
 	return a;
 }
+static void free_matrix(int **a,, int r){
+	if (!a)
+		return;
+	for (int i = 0; i < r; i++)
+		free(a[i]);
+	free(a);
+}
+
+static void recompute_available(Sys *s){
+	for (int j = 0; j < s->m; j++){
+		int sum =0;
+		for (int i = 0; i < s->n; i++)
+			sum += s->Alloc[i][j];
+		s->Avail[j] = s->R[j] - sum;
+	}
+}
+
+
+
+
+
+
+
+
+
+
