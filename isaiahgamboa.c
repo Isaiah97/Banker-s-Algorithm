@@ -264,8 +264,13 @@ static void release_flow(Sys *s){
 }
 
 static void safe_sequence(Sys *s){
-	
+	if (!s->R){
+		printf("Please enter a claim fraph first. \n");
+		return;
+	}
+	(void)safety_check(s, 1);
 }
+
 
 
 
