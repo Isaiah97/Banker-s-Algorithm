@@ -215,7 +215,7 @@ static void enter_claim_graph(Sys *s){
     s->Alloc = (int*)calloc((size_t)s->n * s->m, sizeof(int));
 
     for (int i = 0; i < s->n; i++){
-        printf("Enter maximum units p%d will claim (r0..r%d): ", i, s->m - 1);
+        printf("Enter maximum number of units process p%d will claim from each resource (r0 to r%d): ", i, s->m - 1);
         for (int j = 0; j < s->m; j++) scanf("%d", &s->Max[IDX(s,i,j)]);
     }
     for (int i = 0; i < s->n; i++){
