@@ -282,6 +282,35 @@ static void menu(void){
     printf("Enter selection: ");
 }
 
+int main(void){
+	Sys s = {0};
+	int choice;
+	for(;;){
+		menu();
+		if(scanf("%d", &choice) != 1){
+			int c;
+			while((c = getchar()) != '\n' && c != EOF)
+				continue;
+			switch(choice){
+			case 1: enter_claim_graph(&s);
+				break;
+			case 2: request_flow(&s);
+				break;
+			case 3: release_flow(&s);
+				break;
+			case 4: safe_sequence(&s);
+				break;
+			case 5: printf("Quitting program...\n");
+				free(s.R);
+				free(s.Avail);
+				free_matrix(s.Max, s.n);
+				free_matrix(s.Alloc, s.n);
+				return 0;
+			default: printf("Invalid selection.\n");
+			}
+		}
+	}
+}
 
 
 
