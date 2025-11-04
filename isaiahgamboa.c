@@ -51,6 +51,9 @@ static void recompute_available(Sys *s){
 	}
 }
 
+static inline int NEED(Sys *s, int i, int j) {
+	return s->Max[i][j] - s->Alloc[i][j];
+}
 
 
 
