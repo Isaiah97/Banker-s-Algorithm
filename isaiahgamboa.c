@@ -79,6 +79,13 @@ static void print_matrix_named(const char *name, Sys *s, int type){
 	}
 }
 
+static void print_all(Sys *s){
+	print_vector("Resources:", s->R, s->m);
+	print_vector("Available:", s->Avail, s->m);
+	print_matrix_named("Max Claim:", s, 0);
+	print_matrix_named("Allocated:", s, 1);
+	print_matrix_named("Need:", s, 2);
+}
 
 
 
