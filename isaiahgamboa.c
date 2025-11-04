@@ -271,6 +271,17 @@ static void safe_sequence(Sys *s){
 	(void)safety_check(s, 1);
 }
 
+static void menu(void){
+	printf("\nBanker's Algorithm\n");
+    printf("------------------\n");
+    printf("1) Enter claim graph\n");
+    printf("2) Request resource\n");
+    printf("3) Release resource\n");
+    printf("4) Determine safe sequence\n");
+    printf("5) Quit program\n\n");
+    printf("Enter selection: ");
+}
+
 
 
 
